@@ -56,7 +56,7 @@ Agregá también tu línea en la sección **Colaboradores** del README.
 Si tenés XAMPP, podés revisar tu aporte antes de subirlo:
 
 ```bash
-php scripts/validar.php
+c
 ```
 
 Si no lo tenés, no pasa nada: el pipeline valida igual cuando abrís el Pull
