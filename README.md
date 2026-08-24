@@ -24,3 +24,4 @@ Está todo en [CONTRIBUTING.md](CONTRIBUTING.md). El resumen:
 <!-- Agregá tu línea acá, en orden alfabético. Este archivo SÍ genera conflictos: es a propósito. -->
 
 - Facundo (docente)
+- Facundo Veron (docente)

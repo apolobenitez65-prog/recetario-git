@@ -1,0 +1,8 @@
+{
+  "comando": "git fetch origin",
+  "categoria": "remoto",
+  "que_hace": "Descarga del remoto la información más reciente de ramas y commits, pero no modifica tus ramas locales.",
+  "ejemplo": "git fetch origin && git log origin/main --oneline",
+  "cuidado": "git fetch NO incorpora los cambios a tu rama actual. Para incorporarlos después necesitás hacer merge, rebase o pull.",
+  "autor": "facundo-veron"
+}
