@@ -1,0 +1,11 @@
+{
+  // CODEOWNERS no es Markdown: si el editor lo formatea como tal,
+  // convierte "*" en viñeta y junta las líneas en un párrafo.
+  "files.associations": {
+    "CODEOWNERS": "plaintext",
+    ".gitattributes": "plaintext"
+  },
+  "[plaintext]": {
+    "editor.formatOnSave": false
+  }
+}

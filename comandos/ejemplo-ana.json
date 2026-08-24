@@ -1,0 +1,8 @@
+{
+  "comando": "git switch -c",
+  "categoria": "ramas",
+  "que_hace": "Crea una rama nueva a partir de donde estás parado y te mueve a ella.",
+  "ejemplo": "git switch -c comando/ana",
+  "cuidado": "Si la rama ya existe falla. Sin -c solo cambia a una rama existente.",
+  "autor": "ejemplo-ana"
+}

@@ -1,0 +1,25 @@
+# Equivalente en GitLab, para comparar los dos pipelines en clase.
+stages: [validar, publicar]
+
+default:
+  image: php:8.2-cli
+
+validar:
+  stage: validar
+  script:
+    - php scripts/validar.php
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+pages:
+  stage: publicar
+  script:
+    - VERSION=$CI_COMMIT_TAG php scripts/construir.php
+    - mv dist public
+  artifacts:
+    paths: [public]
+  rules:
+    # El deploy SOLO ocurre si hay un tag. Mergear a main no publica nada.
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/

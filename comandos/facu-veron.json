@@ -1,0 +1,8 @@
+{
+  "comando": "git log --oneline --graph --all",
+  "categoria": "historia",
+  "que_hace": "Dibuja el historial completo como un grafo, una línea por commit.",
+  "ejemplo": "git log --oneline --graph --all --decorate",
+  "cuidado": "En repos grandes conviene agregar -n 20 para no imprimir todo.",
+  "autor": "facu-veron"
+}

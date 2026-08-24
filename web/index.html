@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recetario Git — Metodología de Sistemas II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papel:#E8EBF0;
+    --panel:#F7F8FA;
+    --tinta:#10141C;
+    --tenue:#5C6675;
+    --regla:#C9D0DC;
+    --add:#106B3F;
+    --add-bg:#DDEEE4;
+    --del:#A3211C;
+    --del-bg:#F4E0DE;
+    --gutter:#AEB7C6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--papel);
+    color:var(--tinta);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    padding:0 clamp(16px,4vw,56px) 96px;
+  }
+  .marco{max-width:1040px;margin:0 auto}
+
+  /* ---- cabecera como header de diff ---- */
+  header{padding:clamp(40px,7vw,88px) 0 28px}
+  .ruta{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;color:var(--tenue);
+    display:flex;flex-direction:column;gap:2px;margin-bottom:22px;
+  }
+  .ruta .menos{color:var(--del)}
+  .ruta .mas{color:var(--add)}
+  h1{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-variation-settings:"wdth" 84,"wght" 750;
+    font-size:clamp(44px,10.5vw,104px);
+    line-height:.86;
+    letter-spacing:-.035em;
+    text-wrap:balance;
+  }
+  .bajada{
+    margin-top:20px;max-width:52ch;color:var(--tenue);
+    font-size:clamp(15px,1.6vw,17px);
+  }
+  .medidor{
+    margin-top:26px;display:flex;flex-wrap:wrap;gap:8px 20px;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--tenue);
+    border-top:1px solid var(--regla);padding-top:14px;
+  }
+  .medidor b{color:var(--tinta);font-weight:600}
+
+  /* ---- filtros ---- */
+  nav{
+    display:flex;flex-wrap:wrap;gap:6px;
+    margin:34px 0 30px;
+  }
+  nav button{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;
+    background:transparent;color:var(--tenue);
+    border:1px solid var(--regla);border-radius:0;
+    padding:6px 11px;cursor:pointer;
+    transition:background .12s,color .12s,border-color .12s;
+  }
+  nav button:hover{color:var(--tinta);border-color:var(--tenue)}
+  nav button[aria-pressed="true"]{
+    background:var(--tinta);color:var(--panel);border-color:var(--tinta);
+  }
+  nav button:focus-visible{outline:2px solid var(--add);outline-offset:2px}
+
+  /* ---- hunk ---- */
+  .hunk{
+    background:var(--panel);
+    border:1px solid var(--regla);
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .hunk-cabecera{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;
+    color:var(--tenue);
+    background:#EDF0F5;
+    border-bottom:1px solid var(--regla);
+    padding:7px 14px;
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .hunk-cabecera .autor{color:var(--gutter)}
+  .linea{
+    display:grid;
+    grid-template-columns:44px 18px 1fr;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13.5px;
+    align-items:start;
+  }
+  .num{
+    color:var(--gutter);text-align:right;padding:5px 10px 5px 0;
+    user-select:none;font-size:12px;border-right:1px solid var(--regla);
+  }
+  .signo{text-align:center;padding:5px 0;user-select:none;font-weight:600}
+  .texto{padding:5px 14px 5px 8px;white-space:pre-wrap;word-break:break-word}
+  .linea.titulo .texto{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-variation-settings:"wdth" 88,"wght" 700;
+    font-size:clamp(19px,2.4vw,25px);
+    letter-spacing:-.02em;padding-top:9px;padding-bottom:9px;
+  }
+  .linea.ctx .texto{font-family:"IBM Plex Sans",sans-serif;color:var(--tenue);font-size:14.5px}
+  .linea.mas{background:var(--add-bg)}
+  .linea.mas .signo,.linea.mas .texto{color:var(--add)}
+  .linea.menos{background:var(--del-bg)}
+  .linea.menos .signo,.linea.menos .texto{color:var(--del)}
+
+  .vacio,.cargando{
+    font-family:"IBM Plex Mono",monospace;color:var(--tenue);
+    border:1px dashed var(--regla);padding:28px 18px;text-align:center;
+  }
+  footer{
+    margin-top:44px;padding-top:16px;border-top:1px solid var(--regla);
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--tenue);
+  }
+  footer a{color:var(--tinta)}
+
+  .hunk{animation:entra .32s ease-out both}
+  @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.hunk{animation:none}}
+  @media (max-width:520px){
+    .linea{grid-template-columns:32px 16px 1fr}
+    .num{padding-right:7px}
+  }
+</style>
+</head>
+<body>
+<div class="marco">
+
+  <header>
+    <div class="ruta">
+      <span>diff --git a/recetario b/recetario</span>
+      <span class="menos">--- a/recetario (antes de la clase)</span>
+      <span class="mas">+++ b/recetario (después de sus PRs)</span>
+    </div>
+    <h1>Recetario<br>Git</h1>
+    <p class="bajada">Cada comando de esta página entró por un Pull Request desde el fork de alguien de la comisión. La página no se edita: se construye sola con lo que ustedes mergean.</p>
+    <div class="medidor" id="medidor"></div>
+  </header>
+
+  <nav id="filtros" aria-label="Filtrar por categoría"></nav>
+
+  <main id="lista" aria-live="polite">
+    <p class="cargando">Cargando aportes…</p>
+  </main>
+
+  <footer>
+    Metodología de Sistemas II · UTN F.R. Resistencia, sede Formosa ·
+    <span id="version">versión dev</span>
+  </footer>
+
+</div>
+
+<script>
+const lista = document.getElementById("lista");
+const filtros = document.getElementById("filtros");
+const medidor = document.getElementById("medidor");
+
+let comandos = [];
+let activa = "todas";
+
+function esc(t){
+  return String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+}
+
+function hunk(c, i){
+  return `
+    <article class="hunk">
+      <div class="hunk-cabecera">
+        <span>@@ ${esc(c.categoria)} @@</span>
+        <span class="autor">comandos/${esc(c.autor)}.json</span>
+      </div>
+      <div class="linea titulo"><span class="num">${i}</span><span class="signo"></span><code class="texto">${esc(c.comando)}</code></div>
+      <div class="linea ctx"><span class="num">${i + 1}</span><span class="signo"></span><span class="texto">${esc(c.que_hace)}</span></div>
+      <div class="linea mas"><span class="num">${i + 2}</span><span class="signo">+</span><code class="texto">${esc(c.ejemplo)}</code></div>
+      <div class="linea menos"><span class="num">${i + 3}</span><span class="signo">-</span><span class="texto">${esc(c.cuidado)}</span></div>
+    </article>`;
+}
+
+function pintar(){
+  const visibles = activa === "todas" ? comandos : comandos.filter(c => c.categoria === activa);
+
+  lista.innerHTML = visibles.length
+    ? visibles.map((c, n) => hunk(c, n * 4 + 1)).join("")
+    : `<p class="vacio">Todavía no hay comandos en "${esc(activa)}". Mandá el primero.</p>`;
+
+  [...filtros.children].forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === activa));
+}
+
+function armarFiltros(){
+  const cats = ["todas", ...new Set(comandos.map(c => c.categoria))].sort((a, b) =>
+    a === "todas" ? -1 : b === "todas" ? 1 : a.localeCompare(b, "es"));
+
+  filtros.innerHTML = cats.map(c =>
+    `<button data-cat="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join("");
+
+  filtros.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    activa = b.dataset.cat;
+    pintar();
+  });
+}
+
+async function iniciar(){
+  try {
+    const r = await fetch("./data.json", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+
+    comandos = d.comandos || [];
+    const autores = new Set(comandos.map(c => c.autor)).size;
+    const cats = new Set(comandos.map(c => c.categoria)).size;
+
+    medidor.innerHTML =
+      `<span><b>${comandos.length}</b> comandos</span>` +
+      `<span><b>${autores}</b> colaboradores</span>` +
+      `<span><b>${cats}</b> categorías</span>`;
+    document.getElementById("version").textContent = "versión " + (d.version || "dev");
+
+    armarFiltros();
+    pintar();
+  } catch (e) {
+    lista.innerHTML = `<p class="vacio">No se pudo leer data.json. Corré <code>node scripts/construir.mjs</code> y abrí la página desde <code>dist/</code> con un servidor local.</p>`;
+  }
+}
+
+iniciar();
+</script>
+</body>
+</html>

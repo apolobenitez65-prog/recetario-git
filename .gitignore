@@ -1,0 +1,4 @@
+dist/
+web/data.json
+.DS_Store
+Thumbs.db

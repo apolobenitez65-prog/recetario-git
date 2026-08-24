@@ -1,0 +1,5 @@
+# Quien revisa qué. GitHub asigna reviewers automáticamente según la ruta tocada.
+*                   @facu-veron
+/scripts/           @facu-veron
+/.github/           @facu-veron
+/comandos/          @facu-veron

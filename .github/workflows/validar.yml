@@ -1,0 +1,24 @@
+name: Validar aportes
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Revisar el formato de los comandos
+        run: php scripts/validar.php
+
+      - name: Probar el build
+        run: php scripts/construir.php
